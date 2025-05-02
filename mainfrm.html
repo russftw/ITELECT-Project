@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Online Voting Platform</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+button {
+  margin-top: 15px;
+  width: 100%;
+  padding: 10px;
+  background: #28a745;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #218838;
+}
+
+#result {
+  margin-top: 20px;
+}
+.dashboard-button {
+  padding: 12px 24px;
+  margin-top: 20px;
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  width: 90%;
+  display: inline-block; 
+}
+
+.dashboard-button:hover {
+  background-color: #0056b3;
+}
+
+
+  </style>
+</head>
+<body>
+    <div class="container">
+      <h1>Vote for Your Favorite Candidate</h1>
+      <form id="voteForm">
+        <label><input type="radio" name="vote" value="Russel"> Russel</label><br>
+        <label><input type="radio" name="vote" value="Bob"> Bob</label><br>
+        <label><input type="radio" name="vote" value="Charlie"> Charlie</label><br>
+        <button type="submit">Submit Vote</button>
+      </form>
+  
+      <div id="result">
+        <h2>Live Results:</h2>
+        <p>Russel: <span id="countRussel">0</span></p>
+        <p>Bob: <span id="countBob">0</span></p>
+        <p>Charlie: <span id="countCharlie">0</span></p>
+      </div>
+  
+      <a href="dashboard.html" class="dashboard-button">Go to Dashboard</a>
+    </div>
+  
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const votes = {
+          Russel: 0,
+          Bob: 0,
+          Charlie: 0
+        };
+  
+        let voted = false;
+  
+        const form = document.getElementById("voteForm");
+  
+        const storedVotes = JSON.parse(localStorage.getItem("votes"));
+        if (storedVotes) {
+          Object.assign(votes, storedVotes);
+        }
+        updateResults();
+  
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+  
+          if (voted) {
+            alert("You have already voted!");
+            return;
+          }
+  
+          const selectedOption = document.querySelector('input[name="vote"]:checked');
+          if (!selectedOption) {
+            alert("Please select a candidate.");
+            return;
+          }
+  
+          const selectedValue = selectedOption.value;
+          votes[selectedValue]++;
+          voted = true;
+  
+          localStorage.setItem("votes", JSON.stringify(votes));
+  
+          updateResults();
+        });
+  
+        function updateResults() {
+          document.getElementById("countRussel").textContent = votes.Russel;
+          document.getElementById("countBob").textContent = votes.Bob;
+          document.getElementById("countCharlie").textContent = votes.Charlie;
+        }
+      });
+    </script>
+  </body>  
+</html>
