@@ -81,7 +81,17 @@
             width: 300px;
             text-align: center;
             font-size: 18px;
-            box-shadow: 0 0 10px rgb(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgb(0, 0, 0, 0.25);
+        }
+
+        .modal-content button {
+            margin-top: 10px;
+            padding: 8px 20px;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -90,35 +100,51 @@
         <h2>Voters Login Platform</h2>
         <form onsubmit="return handleLogin(event)">
             <label for="username">Username</label>
-            <input type="text" id="username" name="admin" required>
+            <input type="text" id="username" required>
 
             <label for="password">Password</label>
-            <input type="password" id="password" name="admin123" required>
+            <input type="password" id="password" required>
 
             <button type="submit">Login</button>
         </form>
     </div>
-    <div id="loginModal" class="modal">
+    <div id="messageModal" class="modal">
         <div class="modal-content">
-            Successfully Logged In!
+            <p id="modalMessage"></p>
+        <button id="closeBtn" onclick="closeModal()">Close</button>
         </div>
     </div>
+
     <script>
         function handleLogin(event) {
             event.preventDefault();
-
-            const modal = document.getElementById("loginModal");
-            modal.style.display = "block";
             
-            setTimeout(() => {
-                window.location.href = "mainfrm.html";
-            }, 3000);
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-            return false;
+            const modal = document.getElementById('messageModal');
+            const message = document.getElementById('modalMessage');
+            const closeBtn = document.getElementById('closeBtn');
 
-            window.location.href = "mainfrm.html";
-            return false;
-        }
+            if (username === 'admin' && password === 'admin123') {
+                message.textContent = "Successfully Logged In!";
+                modal.style.display = 'block';
+
+                closeBtn.style.display = 'none';
+
+                setTimeout(() => {
+                    window.location.href = 'mainfrm.html';
+                }, 3000);
+            } else {
+                message.textContent = "Incorrect username or password.";
+                modal.style.display = 'block';
+                closeBtn.style.display = 'inline-block';
+            }
+            }
+            function closeModal() {
+                document.getElementById('messageModal').style.display = 'none';
+            }
+       
     </script>
 </body>
 </html>
