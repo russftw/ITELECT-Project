@@ -59,11 +59,43 @@ button:hover {
 .dashboard-button:hover {
   background-color: #0056b3;
 }
+.navbar {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+}
+.sidebar{
+    position: fixed;
+    top: 60;
+    left: 0;
+    width: 200px;
+    height: calc(100% - 60px);
+    background-color: #343a40;
+    padding-top: 20px;
+}
 
 
   </style>
 </head>
 <body>
+    <div class="navbar">
+        <h1>Online Voting System</h1>
+    </div>
+    <div class="sidebar"></div>
+    <ul>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Vote</a></li>
+        <li><a href="#">Results</a></li>
+        <li><a href="loginfrm.html">Logout</a></li>
+    </ul>
     <div class="container">
       <h1>Vote for Your Favorite Candidate</h1>
       <form id="voteForm">
