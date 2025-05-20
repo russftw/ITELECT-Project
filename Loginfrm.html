@@ -5,15 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Voting Platform</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: lightblue;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
+
+    body {
+    font-family: Arial, sans-serif;
+    background: url('vote.webp') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    }
 
         .login-container {
             background-color: white;
@@ -97,7 +99,7 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Voters Login Platform</h2>
+        <h2>Voters Login</h2>
         <form onsubmit="return handleLogin(event)">
             <label for="username">Username</label>
             <input type="text" id="username" required>
