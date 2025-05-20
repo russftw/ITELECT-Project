@@ -1,167 +1,467 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Online Voting Platform</title>
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  padding: 20px;
-}
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-.container {
-  max-width: 500px;
-  margin: auto;
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+    .navbar {
+      background: #0d6efd;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
 
-h1, h2 {
-  text-align: center;
-}
+    .navbar h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0;
+    }
 
-button {
-  margin-top: 15px;
-  width: 100%;
-  padding: 10px;
-  background: #28a745;
-  color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
+    .search-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
 
-button:hover {
-  background: #218838;
-}
+    .search-bar input {
+      padding: 10px;
+      border-radius: 25px;
+      border: none;
+      outline: none;
+      width: 250px;
+      transition: width 0.3s ease;
+    }
 
-#result {
-  margin-top: 20px;
-}
-.dashboard-button {
-  padding: 12px 24px;
-  margin-top: 20px;
-  background-color: #007bff;
-  color: white;
-  text-align: center;
-  border-radius: 5px;
-  text-decoration: none;
-  font-size: 16px;
-  width: 90%;
-  display: inline-block; 
-}
+    .search-bar input:focus {
+      width: 300px;
+    }
 
-.dashboard-button:hover {
-  background-color: #0056b3;
-}
-.navbar {
-    background-color: #007bff;
-    color: white;
-    padding: 15px 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    z-index: 1000;
-}
-.sidebar{
-    position: fixed;
-    top: 60;
-    left: 0;
-    width: 200px;
-    height: calc(100% - 60px);
-    background-color: #343a40;
-    padding-top: 20px;
-}
+    .search-bar button {
+      background-color: #ffffff;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50%;
+      margin-left: -35px;
+    }
 
+    .search-bar button i {
+      color: #0d6efd;
+      font-size: 18px;
+    }
 
+    .sidebar {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background-color: #343a40;
+      padding-top: 20px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar li {
+      padding: 15px 20px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar li a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      display: block;
+      transition: color 0.3s ease;
+    }
+
+    .sidebar li:hover {
+      background-color: #495057;
+    }
+
+    .sidebar li a:hover {
+      color: #0d6efd;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 600px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transform: scale(0.9);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: #333;
+      font-size: 24px;
+    }
+
+    .close {
+      background: transparent;
+      border: 2px solid #fd0202;
+      color: #ff0000;
+      padding: 5px 12px;
+      margin-bottom: 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .close:hover {
+      background-color: #ff0000;
+      color: white;
+    }
+
+    .modal.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal.show .modal-content {
+      transform: scale(1);
+    }
+
+    .container {
+      margin-left: 240px;
+      padding: 40px;
+      margin-top: 80px;
+    }
+
+    .candidates {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    .vote-btn {
+      padding: 12px 25px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    .vote-btn.disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .vote-btn:hover:not(.disabled) {
+      background: #218838;
+    }
+
+    .modal-button {
+      padding: 12px 25px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+
+    .modal-button:hover {
+      background: #0056b3;
+    }
+
+    .footer {
+      background-color: #373e9c;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: fixed;
+      margin-left: 550px;
+      margin-bottom: 30px;
+      bottom: 0;
+      width: 50%;
+      border-radius: 30px;
+    }
+
+    .footer p {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
-    <div class="navbar">
-        <h1>Online Voting System</h1>
+  <div class="navbar">
+    <h1><i class="fas fa-vote-yea"></i> Voting Platform</h1>
+
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="Search candidates..." oninput="filterCandidates()" />
+      <button><i class="fas fa-search"></i></button>
     </div>
-    <div class="sidebar"></div>
+  </div>
+
+  <div class="sidebar">
     <ul>
-        <li><a href="#">Dashboard</a></li>
-        <li><a href="#">Vote</a></li>
-        <li><a href="#">Results</a></li>
-        <li><a href="loginfrm.html">Logout</a></li>
+      <li><a href="javascript:void(0);" onclick="openModal('voteModal')"><i class="fas fa-check-circle"></i> Vote</a></li>
+      <li><a href="javascript:void(0);" onclick="openModal('resultsModal')"><i class="fas fa-chart-bar"></i> Results</a></li>
+      <li><a href="javascript:void(0);" onclick="openModal('logoutModal')"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
     </ul>
-    <div class="container">
-      <h1>Vote for Your Favorite Candidate</h1>
-      <form id="voteForm">
-        <label><input type="radio" name="vote" value="Russel"> Russel</label><br>
-        <label><input type="radio" name="vote" value="Bob"> Bob</label><br>
-        <label><input type="radio" name="vote" value="Charlie"> Charlie</label><br>
-        <button type="submit">Submit Vote</button>
-      </form>
-  
-      <div id="result">
-        <h2>Live Results:</h2>
-        <p>Russel: <span id="countRussel">0</span></p>
-        <p>Bob: <span id="countBob">0</span></p>
-        <p>Charlie: <span id="countCharlie">0</span></p>
+  </div>
+
+  <div class="container">
+    <div class="candidates">
+      <div class="card" id="BamAquinoCard">
+        <img src="bam.png" alt="Bam Aquino" />
+        <h3>Bam Aquino</h3>
+        <button class="vote-btn" onclick="castVote('Bam Aquino', this)">Vote</button>
       </div>
-  
-      <a href="dashboard.html" class="dashboard-button">Go to Dashboard</a>
+      <div class="card" id="KikoPangilinanCard">
+        <img src="kiko.png" alt="Kiko Pangilinan" />
+        <h3>Kiko Pangilinan</h3>
+        <button class="vote-btn" onclick="castVote('Kiko Pangilinan', this)">Vote</button>
+      </div>
+      <div class="card" id="HeidiMendozaCard">
+        <img src="heidi.png" alt="Heidi Mendoza" />
+        <h3>Heidi Mendoza</h3>
+        <button class="vote-btn" onclick="castVote('Heidi Mendoza', this)">Vote</button>
+      </div>
+      <div class="card" id="LukeEspirituCard">
+        <img src="luke.png" alt="Luke Espiritu" />
+        <h3>Luke Espiritu</h3>
+        <button class="vote-btn" onclick="castVote('Luke Espiritu', this)">Vote</button>
+      </div>
+      <div class="card" id="TeddyCasinoCard">
+        <img src="teddy.png" alt="Teddy Casino" />
+        <h3>Teddy Casino</h3>
+        <button class="vote-btn" onclick="castVote('Teddy Casino', this)">Vote</button>
+      </div>
+      <div class="card" id="RonnelArambuloCard">
+        <img src="ronnel.png" alt="Ronnel Arambulo" />
+        <h3>Ronnel Arambulo</h3>
+        <button class="vote-btn" onclick="castVote('Ronnel Arambulo', this)">Vote</button>
+      </div>
+      <div class="card" id="LizaMazaCard">
+        <img src="liza.png" alt="Liza Maza" />
+        <h3>Liza Maza</h3>
+        <button class="vote-btn" onclick="castVote('Liza Maza', this)">Vote</button>
+      </div>
+      <div class="card" id="ArleneBrosasCard">
+        <img src="arlene.png" alt="Arlene Brosas" />
+        <h3>Arlene Brosas</h3>
+        <button class="vote-btn" onclick="castVote('Arlene Brosas', this)">Vote</button>
+      </div>
+      <div class="card" id="DaniloRamosCard">
+        <img src="danilo.png" alt="Danilo Ramos" />
+        <h3>Danilo Ramos</h3>
+        <button class="vote-btn" onclick="castVote('Danilo Ramos', this)">Vote</button>
+      </div>
     </div>
-  
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const votes = {
-          Russel: 0,
-          Bob: 0,
-          Charlie: 0
-        };
-  
-        let voted = false;
-  
-        const form = document.getElementById("voteForm");
-  
-        const storedVotes = JSON.parse(localStorage.getItem("votes"));
-        if (storedVotes) {
-          Object.assign(votes, storedVotes);
-        }
-        updateResults();
-  
-        form.addEventListener("submit", function (e) {
-          e.preventDefault();
-  
-          if (voted) {
-            alert("You have already voted!");
-            return;
-          }
-  
-          const selectedOption = document.querySelector('input[name="vote"]:checked');
-          if (!selectedOption) {
-            alert("Please select a candidate.");
-            return;
-          }
-  
-          const selectedValue = selectedOption.value;
-          votes[selectedValue]++;
-          voted = true;
-  
-          localStorage.setItem("votes", JSON.stringify(votes));
-  
-          updateResults();
-        });
-  
-        function updateResults() {
-          document.getElementById("countRussel").textContent = votes.Russel;
-          document.getElementById("countBob").textContent = votes.Bob;
-          document.getElementById("countCharlie").textContent = votes.Charlie;
+  </div>
+
+  <div id="voteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Select a Candidate</h2>
+        <button class="close" onclick="closeModal('voteModal')">&times;</button>
+      </div>
+      <form id="voteForm">
+        <label><input type="radio" name="vote" value="Bam Aquino" /> Bam Aquino</label><br />
+        <label><input type="radio" name="vote" value="Kiko Pangilinan" /> Kiko Pangilinan</label><br />
+        <label><input type="radio" name="vote" value="Heidi Mendoza" /> Heidi Mendoza</label><br />
+        <label><input type="radio" name="vote" value="Luke Espiritu" /> Luke Espiritu</label><br />
+        <label><input type="radio" name="vote" value="Teddy Casino" /> Teddy Casino</label><br />
+        <label><input type="radio" name="vote" value="Ronnel Arambulo" /> Ronnel Arambulo</label><br />
+        <label><input type="radio" name="vote" value="Liza Maza" /> Liza Maza</label><br />
+        <label><input type="radio" name="vote" value="Arlene Brosas" /> Arlene Brosas</label><br />
+        <label><input type="radio" name="vote" value="Danilo Ramos" /> Danilo Ramos</label><br />
+        <button type="submit" class="modal-button">Submit Vote</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Vote Confirmed</h2>
+        <button class="close" onclick="closeModal('confirmationModal')">&times;</button>
+      </div>
+      <p>Your vote has been successfully submitted!</p>
+      <button class="modal-button" onclick="closeModal('confirmationModal')">OK</button>
+    </div>
+  </div>
+
+  <div id="resultsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Voting Results</h2>
+        <button class="close" onclick="closeModal('resultsModal')">&times;</button>
+      </div>
+      <div class="results">
+        <div id="resultBamAquino">Bam Aquino: 0 votes</div>
+        <div id="resultKikoPangilinan">Kiko Pangilinan: 0 votes</div>
+        <div id="resultHeidiMendoza">Heidi Mendoza: 0 votes</div>
+        <div id="resultLukeEspiritu">Luke Espiritu: 0 votes</div>
+        <div id="resultTeddyCasino">Teddy Casino: 0 votes</div>
+        <div id="resultRonnelArambulo">Ronnel Arambulo: 0 votes</div>
+        <div id="resultLizaMaza">Liza Maza: 0 votes</div>
+        <div id="resultArleneBrosas">Arlene Brosas: 0 votes</div>
+        <div id="resultDaniloRamos">Danilo Ramos: 0 votes</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Logout</h2>
+        <button class="close" onclick="closeModal('logoutModal')">&times;</button>
+      </div>
+      <p>Are you sure you want to logout?</p>
+      <button class="modal-button" onclick="logout()">Logout</button>
+      <button class="modal-button" onclick="closeModal('logoutModal')">Cancel</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Vote Wisely!</p>
+  </div>
+
+  <script>
+    let votes = {
+      'Bam Aquino': 0,
+      'Kiko Pangilinan': 0,
+      'Heidi Mendoza': 0,
+      'Luke Espiritu': 0,
+      'Teddy Casino': 0,
+      'Ronnel Arambulo': 0,
+      'Liza Maza': 0,
+      'Arlene Brosas': 0,
+      'Danilo Ramos': 0
+    };
+
+    function castVote(candidate, button) {
+      votes[candidate]++;
+
+      document.getElementById('result' + candidate.replace(' ', '')).innerText = `${candidate}: ${votes[candidate]} votes`;
+
+      button.classList.add('disabled');
+      button.disabled = true;
+
+      openModal('confirmationModal');
+    }
+
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('show');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('show');
+    }
+
+    function filterCandidates() {
+      const searchValue = document.getElementById('search').value.toLowerCase();
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        const candidateName = card.querySelector('h3').innerText.toLowerCase();
+        if (candidateName.includes(searchValue)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
         }
       });
-    </script>
-  </body>  
+    }
+
+    function logout() {
+      alert('Logging out...');
+      window.location.href = 'Loginfrm.html';
+    }
+  </script>
+</body>
 </html>
